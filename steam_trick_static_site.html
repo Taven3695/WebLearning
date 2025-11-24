@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SteamTrick — 低价区代购 & 代注册</title>
+  <meta name="description" content="SteamTrick 为全球玩家提供 Steam 低价区账号代注册、礼物代购、余额交易服务（中/英双语）。快速、安全、价格透明。">
+  <meta name="keywords" content="Steam, 代购, 代注册, 低价区, 游戏购买, Steam 礼物">
+
+  <!--
+    样式说明（对初学者）：
+    - :root 定义了主题色变量（可全局修改）
+    - 使用了简单的响应式规则（@media），当屏幕宽度小于 880px 时，将 .hero 一列展示并让导航自动换行
+    - 我们故意保留了较为基础的 CSS，方便阅读与修改
+  -->
+  <style>
+    :root{--accent:#0066ff;--muted:#6b7280;--card:#ffffff;--bg:#0f172a}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Helvetica,Arial}
+    body{background:linear-gradient(180deg,#071023 0%,#071633 100%);color:#e6eef8;line-height:1.45}
+
+    /* 容器：限制最大宽度并居中 */
+    .container{max-width:1100px;margin:0 auto;padding:28px}
+
+    /* 头部：左右两侧布局 */
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;background:linear-gradient(135deg,#00b4ff,#5b21b6);display:grid;place-items:center;border-radius:8px;font-weight:700}
+
+    /* 导航：横向排列，使用 gap 控制间距 */
+    nav{display:flex;gap:14px;align-items:center}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    nav a.active,nav a:hover{color:#fff;background:rgba(255,255,255,0.04)}
+    .lang-switch{border:1px solid rgba(255,255,255,0.06);padding:6px;border-radius:8px;background:transparent;color:var(--muted)}
+
+    /* 主区域与卡片样式 */
+    .hero{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:center;margin:28px 0}
+    .card{background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    h1{font-size:28px;margin:0 0 10px}
+    p.lead{color:var(--muted);margin:0 0 18px}
+    .cta{display:flex;gap:10px}
+    .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:600}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    .features{display:flex;gap:12px;margin-top:14px}
+    .feature{flex:1;padding:12px;background:rgba(255,255,255,0.02);border-radius:10px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+
+    footer{color:var(--muted);padding:28px 0}
+
+    /* 页面分区 */
+    section{margin:20px 0}
+    .prices table{width:100%;border-collapse:collapse}
+    .prices th,.prices td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
+
+    /* 表单元素样式 */
+    label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted)}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);color:#e8f0ff}
+    .muted{color:var(--muted);font-size:13px}
+
+    /* 响应式：小屏将 hero 调整为单列，导航保持横向但会自动换行（flex-wrap）
+       这就是你之前选择的行为：移动端横向显示 + 自动换行（选项 B） */
+    @media (max-width:880px){
+      .hero{grid-template-columns:1fr}
+      nav{
+        display:flex;
+        flex-wrap:wrap; /* 空间不足时换行，但仍保持横向排列 */
+        gap:14px;
+        align-items:center;
+      }
+    }
+
+    /* 小字号 */
+    .small{font-size:13px}
+
+    /* 徽章样式 */
+    .badge{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.04);font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- header：品牌 + 导航 -->
+    <header>
+      <div class="brand">
+        <div class="logo">ST</div>
+        <div>
+          <div id="site-title">SteamTrick</div>
+          <div class="muted small" id="site-sub">低价区代购 · 账号代注册 · 余额交易</div>
+        </div>
+      </div>
+
+      <!-- 这里包含导航（nav）与语言选择（select） -->
+      <div style="display:flex;gap:12px;align-items:center">
+        <nav id="main-nav">
+          <a href="#home" class="active" data-i18n="nav.home">首页</a>
+          <a href="#register" data-i18n="nav.register">代注册账号</a>
+          <a href="#gifts" data-i18n="nav.gifts">礼物代购</a>
+          <a href="#balance" data-i18n="nav.balance">余额交易</a>
+          <a href="#pricing" data-i18n="nav.pricing">价格表</a>
+          <a href="#help" data-i18n="nav.help">帮助中心</a>
+        </nav>
+
+        <!-- 语言切换器：简单的 select 控件。JS 会根据选择替换页面文本 -->
+        <select id="lang" class="lang-switch" aria-label="Language switch">
+          <option value="zh">中文</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero 区块：主宣传 + 侧边价格卡 -->
+      <section id="home" class="hero">
+        <div>
+          <div class="card">
+            <h1 data-i18n="hero.title">用最低价购买你想玩的游戏</h1>
+            <p class="lead" data-i18n="hero.lead">SteamTrick 为海外玩家提供中国区、乌克兰区等低价区账号代注册、礼物代购与余额交易服务——快捷、安全、价格透明。</p>
+            <div class="cta">
+              <a class="btn" href="#gifts" data-i18n="hero.cta.primary">立即下单</a>
+              <a class="btn secondary" href="#pricing" data-i18n="hero.cta.secondary">查看价格</a>
+            </div>
+
+            <!-- 三个特点卡片 -->
+            <div class="features" style="margin-top:16px">
+              <div class="feature">
+                <div class="badge">低价</div>
+                <div class="small muted">比欧美区便宜 30%–70%</div>
+              </div>
+              <div class="feature">
+                <div class="badge">安全</div>
+                <div class="small muted">专业风控与分步交付</div>
+              </div>
+              <div class="feature">
+                <div class="badge">全球支付</div>
+                <div class="small muted">支持 PayPal / Card / Crypto</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 侧边价格卡：示例性价格表 -->
+        <aside class="card">
+          <h3 data-i18n="aside.title">热门游戏对比</h3>
+          <div class="prices small" style="margin-top:10px">
+            <table>
+              <thead>
+                <tr><th data-i18n="table.game">游戏</th><th data-i18n="table.region">地区</th><th data-i18n="table.price">价格</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Cyberpunk 2077</td><td>中国</td><td>$19.99</td></tr>
+                <tr><td>The Witcher 3</td><td>乌克兰</td><td>$7.49</td></tr>
+                <tr><td>Hollow Knight</td><td>中国</td><td>$2.99</td></tr>
+              </tbody>
+            </table>
+            <div class="muted" style="margin-top:8px" data-i18n="aside.note">注：价格随市场波动，最终以下单时为准。</div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Register -->
+      <section id="register" class="card">
+        <h2 data-i18n="register.title">代注册账号</h2>
+        <p class="muted" data-i18n="register.lead">我们可为您在指定低价区注册 Steam 账号，支持邮件验证与基础安全设置。下单后可选择保管或交付账号。</p>
+        <div class="grid" style="margin-top:12px">
+          <div class="card">
+            <h4 data-i18n="register.pkg.title">基础（账号）</h4>
+            <div class="muted small" data-i18n="register.pkg.desc">国家选择、邮箱绑定、基础配置</div>
+            <div style="margin-top:8px"><strong>$8</strong></div>
+            <div style="margin-top:10px"><a class="btn" href="#" data-action="order" data-service="register" data-i18n="order.now">下单</a></div>
+          </div>
+          <div class="card">
+            <h4 data-i18n="register.pkg.title2">增强（账号+保护）</h4>
+            <div class="muted small" data-i18n="register.pkg.desc2">含两步验证、登录历史清理</div>
+            <div style="margin-top:8px"><strong>$18</strong></div>
+            <div style="margin-top:10px"><a class="btn" href="#" data-action="order" data-service="register_pro" data-i18n="order.now">下单</a></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gifts -->
+      <section id="gifts" class="card">
+        <h2 data-i18n="gifts.title">礼物代购</h2>
+        <p class="muted" data-i18n="gifts.lead">告诉我们想买的游戏，我们会根据低价区价格以礼物方式代购并发送给您指定账号或邮箱。</p>
+        <form id="gift-form" style="margin-top:12px" onsubmit="return handleOrderSubmit(event)">
+          <label data-i18n="form.game.label">游戏名 / Steam 链接</label>
+          <input id="game" placeholder="例：Hades 或 https://store.steampowered.com/app/XXXXX">
+          <label data-i18n="form.region.label">目标地区</label>
+          <select id="region"><option value="cn">中国</option><option value="ua">乌克兰</option></select>
+          <label data-i18n="form.receive.label">接收方式</label>
+          <select id="receive"><option value="gift">以礼物形式发送</option><option value="balance">充值到余额</option></select>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" type="submit" data-i18n="form.submit">提交代购</button>
+            <button class="btn secondary" type="button" onclick="openHelp()" data-i18n="form.help">常见问题</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Balance -->
+      <section id="balance" class="card">
+        <h2 data-i18n="balance.title">余额交易</h2>
+        <p class="muted" data-i18n="balance.lead">我们支持将低价区余额充值到您的账号，或与我们兑换等值余额（含手续费）。</p>
+        <div style="display:grid;grid-template-columns:1fr 260px;gap:12px">
+          <div>
+            <label data-i18n="balance.amount">金额（USD）</label>
+            <input placeholder="例如 10, 20, 50">
+            <label style="margin-top:8px" data-i18n="balance.note">到账说明</label>
+            <div class="muted small" data-i18n="balance.note.detail">通常 10–30 分钟内到账；如遇验证可能延迟。</div>
+          </div>
+          <div class="card small">
+            <div data-i18n="balance.fee">手续费与比率</div>
+            <ul style="padding-left:18px;margin:8px 0">
+              <li class="muted small">充值：收取 5% 手续费</li>
+              <li class="muted small">兑换：实时比率，含服务费</li>
+            </ul>
+            <div style="margin-top:8px"><a class="btn" href="#" data-action="order" data-service="balance" data-i18n="order.now">下单充值</a></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing -->
+      <section id="pricing" class="card">
+        <h2 data-i18n="pricing.title">价格表</h2>
+        <p class="muted" data-i18n="pricing.lead">下表为示例价格，实际以下单时结算为准。</p>
+        <div class="prices" style="margin-top:10px">
+          <table>
+            <thead><tr><th data-i18n="table.game">服务</th><th data-i18n="table.region">地区</th><th data-i18n="table.price">示例价格</th></tr></thead>
+            <tbody>
+              <tr><td data-i18n="pricing.register">账号代注册（基础）</td><td>中国</td><td>$8</td></tr>
+              <tr><td data-i18n="pricing.gift">礼物代购（含手续费）</td><td>乌克兰</td><td>游戏价格 + $3</td></tr>
+              <tr><td data-i18n="pricing.balance">余额充值</td><td>中国</td><td>金额 + 5% 手续费</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Help -->
+      <section id="help" class="card">
+        <h2 data-i18n="help.title">帮助中心</h2>
+        <div style="margin-top:8px">
+          <details style="margin-bottom:8px"><summary data-i18n="help.q1">是否安全？会被封号吗？</summary><div class="muted small" data-i18n="help.a1">我们采取分步交付与最低信息策略，但任何第三方服务均存在风险。下单前请阅读完整风险说明。</div></details>
+          <details style="margin-bottom:8px"><summary data-i18n="help.q2">退款政策</summary><div class="muted small" data-i18n="help.a2">礼物已发送或余额已到账时通常不退款。特殊情况联系客服。</div></details>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <div class="small">© <span id="year"></span> SteamTrick</div>
+          <div class="muted small">服务仅面向需要低价区购买的用户。请遵守当地法律与平台条款。</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <a class="muted small" href="#" data-i18n="footer.tos">条款 & 隐私</a>
+          <a class="btn secondary" href="#" data-i18n="footer.contact">联系客服</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!--
+    JavaScript（教学式注释版）说明：
+    我将按模块在每一段代码上方写清晰的说明，解释“为什么需要这段代码、它做了什么、如何修改”。
+    请注意：为了可读性，我采用的是“模块注释（在代码块上方逐段解释）”。
+  -->
+  <script>
+    /* ======================================================
+       模块 1：多语言字典（i18n）
+       说明：页面中的文本并非写死在 HTML 中，而是通过 data-i18n 属性标注，然后
+       用下面的字典（i18n）根据用户选择替换文本。这是实现简单国际化的常用方法。
+       优点：易于维护、支持任意语言扩展；缺点：当文本非常多时，字典会变大。
+    ======================================================= */
+    const i18n = {
+      zh:{
+        'nav.home':'首页','nav.register':'代注册账号','nav.gifts':'礼物代购','nav.balance':'余额交易','nav.pricing':'价格表','nav.help':'帮助中心',
+        'hero.title':'用最低价购买你想玩的游戏','hero.lead':'SteamTrick 为海外玩家提供中国区、乌克兰区等低价区账号代注册、礼物代购与余额交易服务——快捷、安全、价格透明。','hero.cta.primary':'立即下单','hero.cta.secondary':'查看价格',
+        'aside.title':'热门游戏对比','aside.note':'注：价格随市场波动，最终以下单时为准。','table.game':'服务/游戏','table.region':'地区','table.price':'价格',
+        'register.title':'代注册账号','register.lead':'我们可为您在指定低价区注册 Steam 账号，支持邮件验证与基础安全设置。下单后可选择保管或交付账号。','register.pkg.title':'基础（账号）','register.pkg.desc':'国家选择、邮箱绑定、基础配置','register.pkg.title2':'增强（账号+保护）','register.pkg.desc2':'含两步验证、登录历史清理',
+        'gifts.title':'礼物代购','gifts.lead':'告诉我们想买的游戏，我们会根据低价区价格以礼物方式代购并发送给您指定账号或邮箱。',
+        'form.game.label':'游戏名 / Steam 链接','form.region.label':'目标地区','form.receive.label':'接收方式','form.submit':'提交代购','form.help':'常见问题',
+        'balance.title':'余额交易','balance.lead':'我们支持将低价区余额充值到您的账号，或与我们兑换等值余额（含手续费）。','balance.amount':'金额（USD）','balance.note':'到账说明','balance.note.detail':'通常 10–30 分钟内到账；如遇验证可能延迟。','balance.fee':'手续费与比率',
+        'pricing.title':'价格表','pricing.lead':'下表为示例价格，实际以下单时结算为准。','pricing.register':'账号代注册（基础）','pricing.gift':'礼物代购（含手续费）','pricing.balance':'余额充值',
+        'help.title':'帮助中心','help.q1':'是否安全？会被封号吗？','help.a1':'我们采取分步交付与最低信息策略，但任何第三方服务均存在风险。下单前请阅读完整风险说明。','help.q2':'退款政策','help.a2':'礼物已发送或余额已到账时通常不退款。特殊情况联系客服。',
+        'order.now':'下单'
+      },
+      en:{
+        'nav.home':'Home','nav.register':'Account Reg','nav.gifts':'Gift Purchase','nav.balance':'Balance Trade','nav.pricing':'Pricing','nav.help':'Help Center',
+        'hero.title':'Buy the games you want at the lowest price','hero.lead':'SteamTrick helps international players access low-price regions (China, Ukraine) for account registration, gift purchases and balance trades — fast, safe, transparent.','hero.cta.primary':'Order Now','hero.cta.secondary':'View Prices',
+        'aside.title':'Popular Price Comparison','aside.note':'Note: prices fluctuate; final price is at checkout.','table.game':'Service/Game','table.region':'Region','table.price':'Price',
+        'register.title':'Account Registration','register.lead':'We can register Steam accounts in chosen low-price regions, with email binding and basic security. Choose delivery or custody after purchase.','register.pkg.title':'Basic (Account)','register.pkg.desc':'Country selection, email bind, basic setup','register.pkg.title2':'Pro (Account + Protection)','register.pkg.desc2':'Includes 2FA, login history cleanup',
+        'gifts.title':'Gift Purchase','gifts.lead':'Tell us the game and we will buy it from a low-price region as a gift and deliver to your specified account or email.',
+        'form.game.label':'Game name / Steam link','form.region.label':'Target region','form.receive.label':'Receive method','form.submit':'Submit Purchase','form.help':'FAQ',
+        'balance.title':'Balance Trade','balance.lead':'We support adding low-region balance to your account, or exchanging balance at a fee.','balance.amount':'Amount (USD)','balance.note':'Arrival info','balance.note.detail':'Usually arrives within 10–30 minutes; may delay for verification.','balance.fee':'Fees & Rates',
+        'pricing.title':'Pricing','pricing.lead':'Table shows example prices; final price at checkout.','pricing.register':'Account Registration (Basic)','pricing.gift':'Gift Purchase (incl. fee)','pricing.balance':'Balance Top-up',
+        'help.title':'Help Center','help.q1':'Is it safe? Will the account be banned?','help.a1':'We follow staged delivery and minimal-info policies, but third-party services carry risk. Read full risk notes before ordering.','help.q2':'Refund policy','help.a2':'Usually no refunds after gift sent or balance delivered. Contact support for exceptions.',
+        'order.now':'Order Now'
+      }
+    };
+
+    /* ======================================================
+       模块 2：应用语言到页面（applyLang）
+       说明：页面中所有需要被替换的元素都有一个 data-i18n 属性，
+       我们遍历这些元素并将字典中对应的文本写入元素的 textContent。
+       这样做的好处是：不修改 HTML 即可切换语言。
+    ======================================================= */
+    const langSelect = document.getElementById('lang');
+    function applyLang(code){
+      // 先从字典取出对应语言的数据（如果没有则默认中文）
+      const dict = i18n[code] || i18n['zh'];
+
+      // querySelectorAll 返回所有带 data-i18n 的元素
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        // 如果字典中有该 key，就把对应文本写进去
+        if(dict[key]) el.textContent = dict[key];
+      });
+
+      // 额外处理：site-sub（页面副标题）需要根据语言手动替换
+      document.getElementById('site-sub').textContent = code === 'en' ? 'Low-price region purchases · Accounts · Balance' : '低价区代购 · 账号代注册 · 余额交易';
+    }
+
+    // 当用户在下拉框切换语言时触发
+    langSelect.addEventListener('change',e=>applyLang(e.target.value));
+    // 页面初始时默认设置为中文
+    applyLang('zh');
+
+    /* ======================================================
+       模块 3：下单按钮的事件处理（没有后端时用于演示）
+       说明：所有带 data-action="order" 的链接都会被监听，点击后
+       阻止默认跳转（preventDefault），并做简单提示。真实项目中
+       这里应打开实际下单表单或跳转到下单页面。
+    ======================================================= */
+    document.querySelectorAll('[data-action="order"]').forEach(btn=>
+      btn.addEventListener('click',e=>{
+        e.preventDefault(); // 防止 a 标签默认跳转
+        const svc = e.currentTarget.getAttribute('data-service')||'order';
+        // 根据当前语言显示不同提示（i18n 也可用于提示文本）
+        alert((langSelect.value==='en'?'Open order form for ':'打开下单表单: ')+svc);
+      })
+    );
+
+    /* ======================================================
+       模块 4：礼物代购表单提交处理（handleOrderSubmit）
+       说明：示例演示了最基础的表单校验与提交反馈。真实场景会：
+       - 校验更多字段（邮箱、链接格式、支付方式等）
+       - 调用后端 API 提交订单
+       - 更友好的 UI（modal、toast）替代 alert
+    ======================================================= */
+    function handleOrderSubmit(ev){
+      ev.preventDefault(); // 阻止表单默认提交（页面刷新）
+
+      // 读取用户输入并去掉首尾空白（trim 是常见的预处理）
+      const game = document.getElementById('game').value.trim();
+
+      // 简单校验：游戏名或链接不能为空
+      if(!game){
+        // 根据当前语言展示不同提示
+        alert(langSelect.value==='en'?'Please enter a game name or link':'请输入游戏名或链接');
+        return; // 返回表示表单未通过校验
+      }
+
+      // 模拟成功提交：提醒用户并清空表单
+      alert((langSelect.value==='en'?'Order received. Our agent will contact you shortly.':'已接收代购请求，客服会尽快联系您。'));
+      document.getElementById('gift-form').reset();
+      return false; // 阻止表单的默认行为
+    }
+
+    /* ======================================================
+       模块 5：帮助中心跳转（openHelp）
+       说明：示例通过修改 location.hash 实现内页跳转，并展开第一个 details
+       作用：让用户在点击“常见问题”时直接看到帮助内容
+    ======================================================= */
+    function openHelp(){
+      // 修改 URL hash（例如 http://.../#help），浏览器会滚动到该锚点
+      location.hash='#help';
+      // 使用可选链（?.）避免在找不到元素时抛错
+      document.querySelector('#help details')?.setAttribute('open','');
+    }
+
+    /* ======================================================
+       模块 6：页脚年份自动更新
+       说明：通过 JS 获取当前年份并写入页面，避免每年手动修改
+    ======================================================= */
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    /* ======================================================
+       模块 7：导航高亮（active）切换逻辑
+       说明：给每个 nav a 添加 click 事件，点击时移除其它链接的 active
+       类并给当前链接添加 active。注意：这只是 UI 行为，不改变 URL
+    ======================================================= */
+    document.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',e=>{
+      // 先移除其它链接的 active
+      document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active'));
+      // 给当前点击的链接加上 active 类
+      e.currentTarget.classList.add('active');
+    }));
+  </script>
+</body>
+</html>
