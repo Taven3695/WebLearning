@@ -57,7 +57,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
       'main.s1.p1': 'Dear players,',
       'main.s1.p2': 'Have you ever been discouraged by the high prices in your region Steam store?\nHave you ever missed out on limited edition or regional content?\nDo you find registering foreign accounts complicated and risky?',
       'main.s1.p3': 'We at GameGlobal completely understand your concerns! We are a team of experienced gamers dedicated to breaking down regional and pricing barriers, allowing every player to enjoy games globally at the best price and most convenient way.',
-      'main.s2.title': 'What Can We Offer You',
+      'main.s2.title': 'What Can We Offer?',
       'main.s2.p1': 'We are committed to building a one-stop, safe, and reliable global Steam gaming service platform.',
       'main.s2.s1.title': '1. Global Gift Purchase - Lowest Cost, Maximum Games!',
       'main.s2.s1.p1': 'Core advantage: Utilizing pricing differences across regions, we purchase games from low-price zones and send them as official Steam gifts. Much cheaper than the local store, saving money is key!',
@@ -453,5 +453,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
     });
 
     updateLanguage(langSelect.value);
+
 
 
